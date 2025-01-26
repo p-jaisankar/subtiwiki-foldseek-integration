@@ -1,0 +1,37 @@
+# Main HTML file
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Foldseek Integration</title>
+</head>
+<body>
+    <h1>Foldseek Integration in SubtiWiki</h1>
+    <form id="foldseekForm">
+        <label for="query">Query File:</label>
+        <input type="text" id="query" name="query">
+        <br>
+        <label for="target">Target Database:</label>
+        <input type="text" id="target" name="target">
+        <br>
+        <button type="submit">Run Foldseek</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('foldseekForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('query').value;
+            const target = document.getElementById('target').value;
+
+            const response = await fetch('/api/foldseek/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query_file: query, target_db: target }),
+            });
+            const data = await response.json();
+            document.getElementById('results').innerText = JSON.stringify(data, null, 2);
+        });
+    </script>
+</body>
+</html>
