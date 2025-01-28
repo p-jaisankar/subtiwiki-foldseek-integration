@@ -4,38 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foldseek Integration</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Foldseek Integration in SubtiWiki</h1>
-        <form id="foldseekForm">
-            <label for="queryFile">Query File:</label>
-            <input type="text" id="queryFile" placeholder="Enter query file name">
-            
-            <label for="targetDb">Target Database:</label>
-            <input type="text" id="targetDb" placeholder="Enter target database">
-            
-            <button type="submit">Run Foldseek</button>
-        </form>
-
-        <h2>Results</h2>
-        <table id="resultsTable">
-            <thead>
-                <tr>
-                    <th>Query ID</th>
-                    <th>Target ID</th>
-                    <th>TTM Score</th>
-                    <th>QTM Score</th>
-                    <th>Alignment Start</th>
-                    <th>Alignment End</th>
-                    <th>E-value</th>
-                    <th>Pident</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <script src="script.js"></script>
+    <h1>Foldseek Integration</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdb,.cif,.zip">
+        <button type="submit">Upload</button>
+    </form>
+    <div id="results"></div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
