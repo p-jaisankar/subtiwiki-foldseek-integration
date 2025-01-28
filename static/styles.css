@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+#results {
+    margin-top: 20px;
+}
+
+.result-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.gene-name {
+    color: blue;
+    text-decoration: underline;
+}
+
+.target-id {
+    color: green;
+}
+
+.alignment-bar {
+    width: 100%;
+    background-color: #f0f0f0;
+    position: relative;
+    margin-top: 10px;
+}
+
+.alignment-bar .bar {
+    background-color: #4caf50;
+    height: 20px;
+    position: absolute;
+}
