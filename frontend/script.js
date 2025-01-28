@@ -1,32 +1,50 @@
-document.getElementById('foldseekForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+document.querySelector('form').addEventListener('submit', function (event) {
+    event.preventDefault();
 
-    const queryFile = document.getElementById('queryFile').value;
-    const targetDb = document.getElementById('targetDb').value;
-
-    const response = await fetch('http://127.0.0.1:5000/api/foldseek', {
+    const formData = new FormData(this);
+    fetch('/upload', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query_file: queryFile, target_db: targetDb }),
-    });
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = '';
+        // Parse and display the results
+        const lines = data.split('\n');
+        lines.forEach(line => {
+            if (line.trim()) {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                const [geneName, targetId, qtm, ttm, chainPairings, position, eValue, probability, score, seqIdentity, alignment] = line.split('\t');
 
-    const data = await response.json();
-    const results = data.results;
+                const geneLink = document.createElement('a');
+                geneLink.href = `https://www.ncbi.nlm.nih.gov/gene/${geneName}`;
+                geneLink.classList.add('gene-name');
+                geneLink.textContent = geneName;
+                resultItem.appendChild(geneLink);
 
-    const resultsTable = document.querySelector('#resultsTable tbody');
-    resultsTable.innerHTML = '';
+                const targetLink = document.createElement('a');
+                targetLink.href = `https://www.rcsb.org/structure/${targetId}`;
+                targetLink.classList.add('target-id');
+                targetLink.textContent = targetId;
+                resultItem.appendChild(document.createTextNode(' | '));
+                resultItem.appendChild(targetLink);
 
-    results.forEach(result => {
-        const row = `<tr>
-            <td>${result['Query ID']}</td>
-            <td>${result['Target ID']}</td>
-            <td>${result['TTM Score']}</td>
-            <td>${result['QTM Score']}</td>
-            <td>${result['Alignment Start']}</td>
-            <td>${result['Alignment End']}</td>
-            <td>${result['E-value']}</td>
-            <td>${result['Pident']}</td>
-        </tr>`;
-        resultsTable.insertAdjacentHTML('beforeend', row);
-    });
+                resultItem.appendChild(document.createElement('br'));
+                resultItem.appendChild(document.createTextNode(`QTM: ${qtm}, TTM: ${ttm}, E-value: ${eValue}, Probability: ${probability}, Score: ${score}, Sequence Identity: ${seqIdentity}`));
+
+                const alignmentBar = document.createElement('div');
+                alignmentBar.classList.add('alignment-bar');
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                bar.style.width = `${position}%`;
+                alignmentBar.appendChild(bar);
+                resultItem.appendChild(alignmentBar);
+
+                resultsContainer.appendChild(resultItem);
+            }
+        });
+    })
+    .catch(error => console.error('Error:', error));
 });
