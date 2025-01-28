@@ -1,20 +1,15 @@
-#Flask app
-
 from flask import Flask, request, jsonify
-import foldseek_utils
+from mock_foldseek import run_mock_foldseek
 
 app = Flask(__name__)
 
-# Example endpoint for running Foldseek queries
-@app.route('/api/foldseek/search', methods=['POST'])
-def run_foldseek():
+@app.route('/api/foldseek', methods=['POST'])
+def foldseek_api():
     data = request.json
-    query_file = data['query_file']
-    target_db = data['target_db']
-    
-    # Run Foldseek search
-    results = foldseek_utils.run_foldseek(query_file, target_db)
-    return jsonify(results)
+    query = data.get('query_file')
+    target = data.get('target_db')
+    results = run_mock_foldseek(query, target)
+    return jsonify({"results": results})
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
